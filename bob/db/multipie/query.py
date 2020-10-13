@@ -47,6 +47,25 @@ class Database(bob.db.base.SQLiteDatabase):
     self.annotation_directory = annotation_directory
     self.annotation_extension = annotation_extension
 
+    self._camera_orientation = dict()
+    self._camera_orientation["11_0"] = "left"
+    self._camera_orientation["12_0"] = "left"
+    self._camera_orientation["09_0"] = "left"
+
+    self._camera_orientation["20_0"] = "right"
+    self._camera_orientation["01_0"] = "right"
+    self._camera_orientation["24_0"] = "right"
+
+    self._camera_orientation["08_0"] = "frontal"
+    self._camera_orientation["08_1"] = "frontal"
+    self._camera_orientation["13_0"] = "frontal"
+    self._camera_orientation["14_0"] = "frontal"
+    self._camera_orientation["05_1"] = "frontal"
+    self._camera_orientation["05_0"] = "frontal"
+    self._camera_orientation["04_1"] = "frontal"
+    self._camera_orientation["19_0"] = "frontal"
+    self._camera_orientation["19_1"] = "frontal"
+
   def groups(self, protocol=None):
     """Returns the names of all registered groups"""
 
@@ -639,7 +658,9 @@ class Database(bob.db.base.SQLiteDatabase):
       count = int(f.readline())
       if count == 6:
         # profile annotations
-        labels = ['eye', 'nose', 'mouth', 'lipt', 'lipb', 'chin']
+        prefix = "l" if self._camera_orientation[file.file_multiview.camera.name]=="left" else "r"
+        labels = [f"{prefix}eye", 'nose', 'mouth', 'lipt', 'lipb', 'chin']
+
       elif count == 8:
         # half profile annotations
         labels = ['reye', 'leye', 'nose', 'mouthr',

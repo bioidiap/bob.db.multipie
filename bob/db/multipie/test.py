@@ -118,6 +118,20 @@ def test_annotations():
 
 
 @db_available
+def test_annotations_pose_protocol():
+    # read some annotation files and test it's content
+    dir = "/idiap/group/biometric/annotations/multipie"
+    if not os.path.exists(dir):
+        raise SkipTest("The annotation directory '%s' is not available, annotations can't be tested." % dir)
+    db = bob.db.multipie.Database(annotation_directory = dir)
+
+    for cameras  in [["11_0", "12_0", "09_0"],["20_0", "01_0", "24_0"]]:
+        pivot = "leye" if "11_0" in cameras else "reye"
+        for file in db.objects(cameras=cameras):
+            assert pivot in db.annotations(file)
+
+
+@db_available
 def test_driver_api():
 
   from bob.db.base.script.dbmanage import main
